@@ -8,6 +8,7 @@ This file creates your application.
 
 import os
 from datetime import datetime
+from functools import reduce
 from flask import Flask, render_template, flash, request, redirect, url_for
 from forms import IndexForm
 from strava import get_segments_effort_count
@@ -32,6 +33,7 @@ def index():
         flash('Selected segment_ids="%s", start_date=%s, end_date=%s' %
               (segment_ids, start_date, end_date))
         flash('Result efforts: %s' % efforts)
+        flash('Total efforts: %d' % reduce(lambda x, y: x + y, efforts.values()))
         return redirect('/')
     return render_template('index.html',
                            title='Get Counters',
