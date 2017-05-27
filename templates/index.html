@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+
+{% block js %}
+{% endblock %}
+
+
+{% block main %}
+    <hr>
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <ul>
+            {% for message in messages %}
+                <li>{{ message }} </li>
+            {% endfor %}
+            </ul>
+        {% endif %}
+    {% endwith %}
+    <form action="" method="post" name="strava_counts">
+        {{ form.hidden_tag() }}
+        <p>
+        {{ form.segment_ids}}
+        </p>
+        <p> {{form.start_date}} </p>
+        <p>{{ form.end_date }}</p>
+        <p><input type="submit" value="Get efforts"></p>
+    </form>
+{% endblock %}
