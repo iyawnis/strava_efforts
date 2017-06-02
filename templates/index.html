@@ -2,27 +2,70 @@
 
 
 {% block js %}
+
 {% endblock %}
 
 
 {% block main %}
+
+<div class="container">
+{% if 'efforts' in results %}
+
+<table class="table table-striped">
+
+  <thead>
+    <tr>
+      <th> Name (id) </th>
+      <th> Effort Count </th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for effort_name, effort_count in results.efforts.items() %}
+      <tr>
+        <td>{{effort_name}}</td>
+        <td>{{effort_count}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>>
+  <tfoot>
+    <tr>
+      <td><b>Total</b></td>
+      <td><b>{{results.total_efforts}}</b></td>
+    </tr>
+  </tfoot>
+</table>
+
+
+{% endif %}
+
     <hr>
-    {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-            {% for message in messages %}
-                <li>{{ message }} </li>
-            {% endfor %}
-            </ul>
-        {% endif %}
-    {% endwith %}
-    <form action="" method="post" name="strava_counts">
-        {{ form.hidden_tag() }}
-        <p>
-        {{ form.segment_ids}}
-        </p>
-        <p> {{form.start_date}} </p>
-        <p>{{ form.end_date }}</p>
-        <p><input type="submit" value="Get efforts"></p>
-    </form>
+  <form class="form form-horizontal"  method="post" name="strava_counts">
+    {{ form.hidden_tag() }}
+
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="start_date">Start date:</label>
+      <div class="col-sm-10">
+        {{form.start_date(class="form-control")}}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="end_date">End date:</label>
+      <div class="col-sm-10">
+        {{ form.end_date(class="form-control") }}
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="control-label col-sm-2" for="segment_ids">Segment Ids:</label>
+      <div class="col-sm-10">
+        {{ form.segment_ids(class="form-control") }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <div class="col-sm-offset-2 col-sm-10">
+        <button type="submit" class="btn btn-default">Get efforts</button>
+      </div>
+    </div>
+  </form>
+</div>
 {% endblock %}

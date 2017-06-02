@@ -24,8 +24,6 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/1.4.1/less.min.js"></script>
   <script>window.less || document.write('<script src="/static/js/less.js">\x3C/script>')</script>
 
-  <!-- Need Modernizr? Uncomment the following script. -->
-  <!-- <script src="/static/js/modernizr.js"></script> -->
 
 </head>
 
@@ -51,17 +49,9 @@
   <script>window.jQuery || document.write('<script src="/static/js/libs/jquery.js">\x3C/script>')</script>
 
 
+
   <!-- Additional JavaScript libraries and plugins... -->
   {% block js %}{% endblock %}
-
-
-  <!-- mathiasbynens.be/notes/async-analytics-snippet Change UA-XXXXX-X to be your site's ID -->
-  <script>
-    var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];
-    (function(d,t){var g=d.createElement(t),s=d.getElementsByTagName(t)[0];g.async=1;
-    g.src=('https:'==location.protocol?'//ssl':'//www')+'.google-analytics.com/ga.js';
-    s.parentNode.insertBefore(g,s)}(document,'script'));
-  </script>
 
 
   <!-- Prompt IE < 8 users to install Chrome Frame.  -->

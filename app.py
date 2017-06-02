@@ -25,19 +25,24 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 @app.route('/', methods=['GET', 'POST'])
 def index():
     form = IndexForm()
+    results = {}
     if form.validate_on_submit():
         start_date = form.start_date.data
         end_date = form.end_date.data
         segment_ids = [int(segment_id) for segment_id in form.segment_ids.data.split(',')]
         efforts = get_segments_effort_count(segment_ids, start_date, end_date)
-        flash('Selected segment_ids="%s", start_date=%s, end_date=%s' %
-              (segment_ids, start_date, end_date))
-        flash('Result efforts: %s' % efforts)
-        flash('Total efforts: %d' % reduce(lambda x, y: x + y, efforts.values()))
-        return redirect('/')
-    return render_template('index.html',
-                           title='Get Counters',
-                           form=form)
+        results = {
+            'segment_ids': segment_ids,
+            'start_date': start_date,
+            'end_date': end_date,
+            'efforts': efforts,
+            'total_efforts': reduce(lambda x, y: x + y, efforts.values())
+        }
+    return render_template(
+        'index.html',
+        form=form,
+        results=results
+    )
 
 
 @app.route('/about/')
