@@ -11,7 +11,6 @@ from datetime import datetime
 from functools import reduce
 from flask import Flask, render_template, flash, request, redirect, url_for
 from forms import IndexForm
-from strava import get_segments_effort_count
 
 app = Flask(__name__)
 
@@ -30,12 +29,11 @@ def index():
         start_date = form.start_date.data
         end_date = form.end_date.data
         segment_ids = [int(segment_id) for segment_id in form.segment_ids.data.split(',')]
-        efforts = get_segments_effort_count(segment_ids, start_date, end_date)
         results = {
             'segment_ids': segment_ids,
             'start_date': start_date,
             'end_date': end_date,
-            'efforts': efforts,
+            'efforts': 0,
             'total_efforts': reduce(lambda x, y: x + y, efforts.values())
         }
     return render_template(
