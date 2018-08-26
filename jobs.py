@@ -10,8 +10,8 @@ sched = BlockingScheduler()
 def timed_job():
     segment_id = '7550717'
     print('This job is run every three minutes.')
-    effort_count = get_efforts_for_segment(seg_id)
-    set_segment_date_count(seg_id, datetime.today(), effort_count())
+    effort_count = get_efforts_for_segment(segment_id )
+    set_segment_date_count(segment_id , datetime.today(), effort_count())
 
 
 @sched.scheduled_job('cron', day_of_week='mon-fri', hour=17)
