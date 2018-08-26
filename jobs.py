@@ -6,7 +6,7 @@ from store import set_segment_date_count
 
 sched = BlockingScheduler()
 
-@sched.scheduled_job('interval', hours=1)
+@sched.scheduled_job('interval', minutes=3)
 def timed_job():
     segment_id = '7550717'
     print('This job is run every three minutes.')
