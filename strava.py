@@ -11,5 +11,8 @@ TIMEFRAME = {
 }
 
 def get_efforts_for_segment(segment_id):
-    client = Client(access_token='ACCESS_TOKEN')
-    return client.get_segment_leaderboard(segment_id, timeframe=TIMEFRAME['MONTH'])
+    client = Client(access_token=ACCESS_TOKEN)
+    leaderboard = client.get_segment_leaderboard(segment_id, timeframe=TIMEFRAME['MONTH'])
+    if leaderboard:
+        return leaderboard.effort_count
+    return None
