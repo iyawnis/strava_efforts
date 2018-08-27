@@ -7,9 +7,15 @@ REDIS_URL = os.environ.get('REDISTOGO_URL')
 
 redis = _redis.from_url(REDIS_URL)
 
+TIMEFRAME_FORMAT = {
+    'today': '%Y%m%d',
+    'month': '%Y%m',
+    'week': '%Y%V',
+    'year': '%Y'
+}
 
 def set_segment_count(timeframe, segment, count):
-    strdate = date.today().strftime('%Y%m%d')
+    strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])
     data = redis.hget(timeframe, segment)
     if not data:
         data = json.dumps({})
