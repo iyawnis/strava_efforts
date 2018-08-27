@@ -17,11 +17,16 @@ TIMEFRAME_FORMAT = {
 def set_segment_count(timeframe, segment, count):
     strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])
     data = redis.hget(timeframe, segment)
-    if not data:
-        data = json.dumps({})
-    data = json.loads(data)
+    data = json.loads(data) if data else {}
     data[strdate] = count
     return redis.hset(timeframe, segment, json.dumps(data))
+
+
+def get_data_for_timeframe(timeframe):
+    if timeframe not in TIMEFRAME_FORMAT:
+        raise ValueError(f'Invalid timeframe value: {timeframe}')
+    data = redis.hgetall(timeframe)
+    return {key.decode('utf-8'): json.loads(value) for key, value in data.items()}
 
 
 def get_segments():

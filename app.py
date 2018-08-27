@@ -5,12 +5,16 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 
 This file creates your application.
 """
-
+import io
+import csv
 import os
+from collections import OrderedDict
 from datetime import datetime
 from functools import reduce
-from flask import Flask, render_template, flash, request, redirect, url_for
+from flask import make_response, Flask, render_template, flash, request, redirect, url_for
 from forms import IndexForm
+from store import get_data_for_timeframe
+
 
 app = Flask(__name__)
 
@@ -42,6 +46,29 @@ def index():
         results=results
     )
 
+@app.route('/export/month/', methods=['GET'])
+def export():
+    data = get_data_for_timeframe('month')
+    segment_dates = [list(dates.keys()) for dates in data.values()]
+    unique_dates = {date for all_dates in segment_dates for date in all_dates}
+    unique_dates = sorted(unique_dates)
+    for segment, segment_dates in data.items():
+        for unique_date in unique_dates:
+            if unique_date not in segment_dates:
+                segment_dates[unique_date] = 0
+
+    si = io.StringIO()
+    cw = csv.writer(si)
+    columns = ['segment-id'] + list(unique_dates)
+    cw.writerow(columns)
+    for segment, segment_dates in data.items():
+        segment_dates = OrderedDict(segment_dates.items())
+        row = [segment] + list(segment_dates.values())
+        cw.writerow(row)
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
 
 @app.route('/about/')
 def about():
@@ -68,3 +95,4 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True)
+
