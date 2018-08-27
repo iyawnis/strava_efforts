@@ -9,10 +9,7 @@ import io
 import csv
 import os
 from collections import OrderedDict
-from datetime import datetime
-from functools import reduce
-from flask import make_response, Flask, render_template, flash, request, redirect, url_for
-from forms import IndexForm
+from flask import make_response, Flask, render_template
 from store import get_data_for_timeframe
 
 
@@ -86,5 +83,6 @@ def page_not_found(error):
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug = os.environ.get('DEBUG', False)
+    app.run(debug=debug)
 
