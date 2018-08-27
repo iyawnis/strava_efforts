@@ -51,7 +51,7 @@ def export_for_timeframe(timeframe):
     for segment, segment_dates in data.items():
         for unique_date in unique_dates:
             if unique_date not in segment_dates:
-                segment_dates[unique_date] = 0
+                segment_dates[unique_date] = None
 
     si = io.StringIO()
     cw = csv.writer(si)
