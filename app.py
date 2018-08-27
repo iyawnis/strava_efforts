@@ -18,7 +18,7 @@ from store import get_data_for_timeframe
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 
 ###
@@ -27,28 +27,27 @@ app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configur
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    form = IndexForm()
-    results = {}
-    if form.validate_on_submit():
-        start_date = form.start_date.data
-        end_date = form.end_date.data
-        segment_ids = [int(segment_id) for segment_id in form.segment_ids.data.split(',')]
-        results = {
-            'segment_ids': segment_ids,
-            'start_date': start_date,
-            'end_date': end_date,
-            'efforts': 0,
-            'total_efforts': reduce(lambda x, y: x + y, efforts.values())
-        }
-    return render_template(
-        'index.html',
-        form=form,
-        results=results
-    )
+    return render_template('index.html' )
+
 
 @app.route('/export/month/', methods=['GET'])
-def export():
-    data = get_data_for_timeframe('month')
+def export_month():
+    return export_for_timeframe('month')
+
+
+@app.route('/export/today/', methods=['GET'])
+def export_today():
+    return export_for_timeframe('today')
+
+
+@app.route('/about/')
+def about():
+    """Render the website's about page."""
+    return render_template('about.html')
+
+
+def export_for_timeframe(timeframe):
+    data = get_data_for_timeframe(timeframe)
     segment_dates = [list(dates.keys()) for dates in data.values()]
     unique_dates = {date for all_dates in segment_dates for date in all_dates}
     unique_dates = sorted(unique_dates)
@@ -69,13 +68,6 @@ def export():
     output.headers["Content-Disposition"] = "attachment; filename=export.csv"
     output.headers["Content-type"] = "text/csv"
     return output
-
-@app.route('/about/')
-def about():
-    """Render the website's about page."""
-    return render_template('about.html')
-
-
 @app.after_request
 def add_header(response):
     """
