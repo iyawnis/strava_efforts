@@ -7,16 +7,29 @@ This file creates your application.
 """
 import io
 import csv
+import click
+import logging
 import os
 from collections import OrderedDict
 from flask import make_response, Flask, render_template
 from store import get_data_for_timeframe
+from jobs import store_count_for_timeframe
 
-
+logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+@app.cli.command()
+def collect_day():
+    logger.info('Collecting day counts')
+    store_count_for_timeframe('today')
+
+
+@app.cli.command()
+def collect_month():
+    logger.info('Collecting month counts')
+    store_count_for_timeframe('month')
 
 ###
 # Routing for your application.
