@@ -71,13 +71,14 @@ def export_for_timeframe(timeframe):
     columns = ['segment-id'] + list(unique_dates)
     cw.writerow(columns)
     for segment, segment_dates in data.items():
-        segment_dates = OrderedDict(segment_dates.items())
+        segment_dates = OrderedDict(sorted(segment_dates.items()))
         row = [segment] + list(segment_dates.values())
         cw.writerow(row)
     output = make_response(si.getvalue())
     output.headers["Content-Disposition"] = "attachment; filename=export.csv"
     output.headers["Content-type"] = "text/csv"
     return output
+
 @app.after_request
 def add_header(response):
     """
