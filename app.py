@@ -21,6 +21,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 @app.cli.command()
+def collect_year():
+    logger.info('Collecting year counts')
+    store_count_for_timeframe('year')
+
+@app.cli.command()
 def collect_day():
     logger.info('Collecting day counts')
     store_count_for_timeframe('today')
@@ -49,6 +54,10 @@ def export_month():
 def export_today():
     return export_for_timeframe('today')
 
+
+@app.route('/export/year/', methods=['GET'])
+def export_year():
+    return export_for_timeframe('year')
 
 @app.route('/about/')
 def about():
