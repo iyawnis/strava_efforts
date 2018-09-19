@@ -18,7 +18,7 @@ from jobs import store_count_for_timeframe
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
-api = Api(app)
+# api = Api(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -42,14 +42,16 @@ def collect_month():
 # Routing for your application.
 ###
 
-#@app.route('/', methods=['GET', 'POST'])
-#def index():
-#    return render_template('index.html' )
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    days = data_for_timeframe('today')
+    months = data_for_timeframe('month')
+    return render_template('index.html', days=days, months=months)
 
-@api.route('/month/')
-class MonthResult(Resource):
-    def get(self):
-        return export_for_timeframe('month')
+#@api.route('/month/')
+#class MonthResult(Resource):
+#    def get(self):
+#        return export_for_timeframe('month')
 
 @app.route('/export/month/', methods=['GET'])
 def export_month():
@@ -70,8 +72,7 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-
-def export_for_timeframe(timeframe):
+def data_for_timeframe(timeframe):
     data = get_data_for_timeframe(timeframe)
     segment_dates = [list(dates.keys()) for dates in data.values()]
     unique_dates = {date for all_dates in segment_dates for date in all_dates}
@@ -81,14 +82,18 @@ def export_for_timeframe(timeframe):
             if unique_date not in segment_dates:
                 segment_dates[unique_date] = None
 
-    si = io.StringIO()
-    cw = csv.writer(si)
-    columns = ['segment-id'] + list(unique_dates)
-    cw.writerow(columns)
+    rows = [['segment-id'] + list(unique_dates)]
     for segment, segment_dates in data.items():
         segment_dates = OrderedDict(sorted(segment_dates.items()))
         row = [segment] + list(segment_dates.values())
-        cw.writerow(row)
+        rows.append(row)
+    return rows
+
+def export_for_timeframe(timeframe):
+    si = io.StringIO()
+    cw = csv.writer(si)
+    rows = data_for_timeframe(timeframe)
+    cw.writerows(rows)
     output = make_response(si.getvalue())
     output.headers["Content-Disposition"] = "attachment; filename=export.csv"
     output.headers["Content-type"] = "text/csv"

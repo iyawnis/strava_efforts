@@ -20,4 +20,37 @@
     <a href="{{url_for('export_today')}}"> Day </a>
     </p>
 </div>
+<br/>
+<h2>Days</h2>
+
+<table>
+    <tr>
+        {% for column in days[0] %}
+            <th>{{column}}</th>
+        {% endfor %}
+    </tr>
+    {% for row in days[1:] %}
+        <tr>
+            {% for col in row %}
+                <td>{{col}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+<hr>
+<h2>Months</h2>
+<table>
+    <tr>
+        {% for column in months[0] %}
+            <th>{{column}}</th>
+        {% endfor %}
+    </tr>
+    {% for row in months[1:] %}
+        <tr>
+            {% for col in row %}
+                <td>{{col}}</td>
+            {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
 {% endblock %}
