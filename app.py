@@ -38,6 +38,11 @@ def collect_month():
     logger.info('Collecting month counts')
     store_count_for_timeframe('month')
 
+@app.cli.command()
+def collect_week():
+    logger.info('Collecting week counts')
+    store_count_for_timeframe('week')
+
 ###
 # Routing for your application.
 ###
