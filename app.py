@@ -10,6 +10,7 @@ import csv
 import click
 import logging
 import os
+from flask_restplus import Resource, Api
 from collections import OrderedDict
 from flask import make_response, Flask, render_template
 from store import get_data_for_timeframe
@@ -17,6 +18,7 @@ from jobs import store_count_for_timeframe
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
+api = Api(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
@@ -40,10 +42,14 @@ def collect_month():
 # Routing for your application.
 ###
 
-@app.route('/', methods=['GET', 'POST'])
-def index():
-    return render_template('index.html' )
+#@app.route('/', methods=['GET', 'POST'])
+#def index():
+#    return render_template('index.html' )
 
+@api.route('/month/')
+class MonthResult(Resource):
+    def get(self):
+        return export_for_timeframe('month')
 
 @app.route('/export/month/', methods=['GET'])
 def export_month():
