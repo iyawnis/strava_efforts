@@ -13,6 +13,12 @@ def day_job():
     store_count_for_timeframe('today')
 
 
+@sched.scheduled_job('cron', day_of_week=6, hour=21, minute=5)
+def week_job():
+    logger.info("Storing week's counts")
+    store_count_for_timeframe('week')
+
+
 @sched.scheduled_job('cron', hour=21)
 def month_job():
     logger.info("Storing month's counts")
