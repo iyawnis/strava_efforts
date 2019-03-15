@@ -51,7 +51,8 @@ def collect_week():
 def index():
     days = data_for_timeframe('today')
     months = data_for_timeframe('month')
-    return render_template('index.html', days=days, months=months)
+    weeks = data_for_timeframe('week')
+    return render_template('index.html', weeks=weeks, months=months)
 
 #@api.route('/month/')
 #class MonthResult(Resource):
