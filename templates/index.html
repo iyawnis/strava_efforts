@@ -25,11 +25,11 @@
 
 <table>
     <tr>
-        {% for column in days[0] %}
+        {% for column in week[0] %}
             <th>{{column}}</th>
         {% endfor %}
     </tr>
-    {% for row in days[1:] %}
+    {% for row in week[1:] %}
         <tr>
             {% for col in row %}
                 <td>{{col}}</td>
