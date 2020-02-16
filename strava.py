@@ -1,12 +1,15 @@
 import logging
 import os
-from stravalib.client import Client
+from stravalib import Client
+from store import get_access_token, get_refresh_token, set_access_token, set_refresh_token
 from stravalib.exc import ObjectNotFound
 
 logger = logging.getLogger(__name__)
 
 
-ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN')
+CLIENT_ID = os.environ.get("CLIENT_ID")
+REDIRECT_URL = os.environ.get("AUTHENTICATION_REDIRECT_URL")
+
 TIMEFRAME = {
     'month': 'this_month',
     'year': 'this_year',
@@ -14,9 +17,26 @@ TIMEFRAME = {
     'today': 'today'
 }
 
-client = Client(access_token=ACCESS_TOKEN)
+def set_token(token_dict):
+    set_access_token(token_dict["access_token"], time.time() - token_dict["expires_at"])
+    set_refresh_token(token_dict["refresh_token"])
+    return token_dict["access_token"]
+
+def get_token():
+    if requires_authorization():
+        raise Exception("User is required to complete authentication")
+    access_token, refresh_token = (get_access_token(), get_refresh_token())
+    if access_token:
+        return access_token
+    client = Client()
+    token_dict = client.refresh_access_token(CLIENT_ID, CLIENT_SECRET, refresh_token)
+    return set_token(token_dict)
+
+def get_client():
+    return Client(access_token=get_token())
 
 def get_efforts_for_segment(timeframe, segment_id):
+    client = get_client()
     if timeframe not in TIMEFRAME:
         raise ValueError(f'Unknown timeframe option {timeframe}')
     try:
@@ -25,3 +45,19 @@ def get_efforts_for_segment(timeframe, segment_id):
     except ObjectNotFound:
         logger.exception(f'Invalid segmentId: {segment_id}')
     return None
+
+
+def requires_authorization():
+    access_token, refresh_token = (get_access_token(), get_refresh_token())
+    if access_token or refresh_token:
+        return False
+    return True
+
+def get_authorization_url():
+    client = Client()
+    return client.authorization_url(client_id=CLIENT_ID, redirect_uri=REDIRECT_URL)
+
+def exchange_code_for_token(token):
+    client = Client()
+    token_dict = client.exchange_code_for_token(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, code=code)
+    return set_token(token_dict)

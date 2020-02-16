@@ -5,6 +5,9 @@ import redis as _redis
 
 REDIS_URL = os.environ.get('REDISTOGO_URL')
 
+ACCESS_TOKEN_KEY = "access_token"
+REFRESH_TOKEN_KEY = "refresh_token"
+
 redis = _redis.from_url(REDIS_URL)
 
 TIMEFRAME_FORMAT = {
@@ -13,6 +16,22 @@ TIMEFRAME_FORMAT = {
     'week': '%Y%V',
     'year': '%Y'
 }
+
+
+def set_access_token(token, ttl):
+    redis.set(ACCESS_TOKEN_KEY, token, ex=ttl)
+
+
+def set_refresh_token(token):
+    redis.set(REFRESH_TOKEN_KEY, token)
+
+def get_access_token():
+    return redis.get(ACCESS_TOKEN_KEY)
+
+
+def get_refresh_token():
+    return redis.get(REFRESH_TOKEN_KEY)
+
 
 def set_segment_count(timeframe, segment, count):
     strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])

@@ -7,7 +7,11 @@
 
 
 {% block main %}
-
+{% if authorization_url %}
+    <div class="container">
+        <a href="{{authorization_url}}"> Click here to authorize</a>
+    </div>
+{% endif %}
 <div class="container">
     <p>
     <a href="{{url_for('export_year')}}"> Year </a>
