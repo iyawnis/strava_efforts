@@ -12,8 +12,8 @@ import logging
 import os
 from flask_restplus import Resource, Api
 from collections import OrderedDict
-from flask import make_response, Flask, render_template, redirect
-from store import get_data_for_timeframe,
+from flask import make_response, Flask, render_template, redirect, request
+from store import get_data_for_timeframe
 from jobs import store_count_for_timeframe
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
 
@@ -60,7 +60,7 @@ def index():
 def auth():
     code = request.args.get('code')
     access_token = exchange_code_for_token(code)
-    redirect("/")
+    return redirect("/")
 
 #@api.route('/month/')
 #class MonthResult(Resource):
@@ -132,5 +132,5 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     debug = os.environ.get('DEBUG', False)
-    app.run(debug=debug)
+    app.run(debug=True, host="0.0.0.0", port=8888)
 

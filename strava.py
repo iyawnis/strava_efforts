@@ -1,4 +1,5 @@
 import logging
+import time
 import os
 from stravalib import Client
 from store import get_access_token, get_refresh_token, set_access_token, set_refresh_token
@@ -8,7 +9,8 @@ logger = logging.getLogger(__name__)
 
 
 CLIENT_ID = os.environ.get("CLIENT_ID")
-REDIRECT_URL = os.environ.get("AUTHENTICATION_REDIRECT_URL")
+CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
+REDIRECT_URL = os.environ.get("REDIRECT_URL")
 
 TIMEFRAME = {
     'month': 'this_month',
@@ -18,16 +20,19 @@ TIMEFRAME = {
 }
 
 def set_token(token_dict):
-    set_access_token(token_dict["access_token"], time.time() - token_dict["expires_at"])
+    set_access_token(token_dict["access_token"], int(token_dict["expires_at"] - time.time()))
     set_refresh_token(token_dict["refresh_token"])
     return token_dict["access_token"]
 
 def get_token():
     if requires_authorization():
+        logger.error("Tried to retrieve token, but user authorization is required")
         raise Exception("User is required to complete authentication")
     access_token, refresh_token = (get_access_token(), get_refresh_token())
     if access_token:
+        logger.info("Return stored token")
         return access_token
+    logger.info("Retrieving refresh token")
     client = Client()
     token_dict = client.refresh_access_token(CLIENT_ID, CLIENT_SECRET, refresh_token)
     return set_token(token_dict)
@@ -57,7 +62,7 @@ def get_authorization_url():
     client = Client()
     return client.authorization_url(client_id=CLIENT_ID, redirect_uri=REDIRECT_URL)
 
-def exchange_code_for_token(token):
+def exchange_code_for_token(code):
     client = Client()
     token_dict = client.exchange_code_for_token(client_id=CLIENT_ID, client_secret=CLIENT_SECRET, code=code)
     return set_token(token_dict)
