@@ -16,11 +16,20 @@ from flask import make_response, Flask, render_template, redirect, request
 from store import get_data
 from jobs import store_segments_counts
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
+from flask_sqlalchemy import SQLAlchemy
+
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+
+@app.cli.command()
+def load_segments():
+    logger.info('Load segments')
+
 
 @app.cli.command()
 def collect_day():
@@ -64,39 +73,6 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-def clean_values(segment_counts):
-    for v in segment_counts.values():
-        if isinstance(v, int) or v is None:
-            yield v
-        else:
-            yield v["effort"]
-
-def data_for_timeframe(timeframe):
-    data = get_data()
-    segment_dates = [list(dates.keys()) for dates in data.values()]
-    unique_dates = {date for all_dates in segment_dates for date in all_dates}
-    unique_dates = sorted(unique_dates)
-    for segment, segment_dates in data.items():
-        for unique_date in unique_dates:
-            if unique_date not in segment_dates:
-                segment_dates[unique_date] = None
-
-    rows = [['segment-id'] + list(unique_dates)]
-    for segment, segment_dates in data.items():
-        segment_dates = OrderedDict(sorted(segment_dates.items()))
-        row = [segment] + list(clean_values(segment_dates))
-        rows.append(row)
-    return rows
-
-def export_for_timeframe(timeframe):
-    si = io.StringIO()
-    cw = csv.writer(si)
-    rows = data_for_timeframe(timeframe)
-    cw.writerows(rows)
-    output = make_response(si.getvalue())
-    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
-    output.headers["Content-type"] = "text/csv"
-    return output
 
 @app.after_request
 def add_header(response):
