@@ -8,6 +8,7 @@ This file creates your application.
 import io
 import logging
 import os
+import sys
 from flask_restplus import Resource, Api
 from flask import make_response, Flask, render_template, redirect, request
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
@@ -20,26 +21,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+from commands import cmd
+app.register_blueprint(cmd)
 
-
-@app.cli.command()
-def load_models():
-    logger.info("Create all models")
-    db.create_all()
-
-
-@app.cli.command()
-def update_segments():
-    logger.info('Load segments')
-    from actions import load_segments
-    load_segments()
-
-
-@app.cli.command()
-def collect_day():
-    logger.info('Collecting day counts')
-    from actions import store_segments_counts
-    store_segments_counts()
 
 ###
 # Routing for your application.
