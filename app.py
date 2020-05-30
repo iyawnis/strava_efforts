@@ -64,8 +64,15 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
+def clean_values(segment_counts):
+    for v in segment_counts.values():
+        if isinstance(v, int) or v is None:
+            yield v
+        else:
+            yield v["effort"]
+
 def data_for_timeframe(timeframe):
-    data = get_data_for_timeframe(timeframe)
+    data = get_data()
     segment_dates = [list(dates.keys()) for dates in data.values()]
     unique_dates = {date for all_dates in segment_dates for date in all_dates}
     unique_dates = sorted(unique_dates)
@@ -77,7 +84,7 @@ def data_for_timeframe(timeframe):
     rows = [['segment-id'] + list(unique_dates)]
     for segment, segment_dates in data.items():
         segment_dates = OrderedDict(sorted(segment_dates.items()))
-        row = [segment] + list(segment_dates.values())
+        row = [segment] + list(clean_values(segment_dates))
         rows.append(row)
     return rows
 

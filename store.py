@@ -38,7 +38,7 @@ def set_segment_count(segment, effort_count, athlete_count):
     strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])
     data = redis.hget(timeframe, segment)
     data = json.loads(data) if data else {}
-    data[strdate] = (effort_count, athlete_count)
+    data[strdate] = {"effort": effort_count, "athletes": athlete_count}
     return redis.hset(timeframe, segment, json.dumps(data))
 
 
