@@ -21,6 +21,13 @@ db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
+
+@app.cli.command()
+def load_models():
+    logger.info("Create all models")
+    db.create_all()
+
+
 @app.cli.command()
 def update_segments():
     logger.info('Load segments')

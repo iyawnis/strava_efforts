@@ -54,4 +54,5 @@ def load_segments():
 
 
 if __name__ == '__main__':
+    db.create_all()
     load_segments()
