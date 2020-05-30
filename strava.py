@@ -40,13 +40,11 @@ def get_token():
 def get_client():
     return Client(access_token=get_token())
 
-def get_efforts_for_segment(timeframe, segment_id):
+def get_efforts_for_segment(segment_id):
     client = get_client()
-    if timeframe not in TIMEFRAME:
-        raise ValueError(f'Unknown timeframe option {timeframe}')
     try:
-        leaderboard = client.get_segment_leaderboard(segment_id, timeframe=TIMEFRAME[timeframe])
-        return leaderboard.effort_count
+        sergment = client.get_segment(segment_id)
+        return (segment.effort_count, segment.athlete_count)
     except ObjectNotFound:
         logger.exception(f'Invalid segmentId: {segment_id}')
     return None

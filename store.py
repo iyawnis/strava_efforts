@@ -33,7 +33,8 @@ def get_refresh_token():
     return redis.get(REFRESH_TOKEN_KEY)
 
 
-def set_segment_count(timeframe, segment, count):
+def set_segment_count(segment, count):
+    timeframe = "today"
     strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])
     data = redis.hget(timeframe, segment)
     data = json.loads(data) if data else {}
@@ -41,9 +42,8 @@ def set_segment_count(timeframe, segment, count):
     return redis.hset(timeframe, segment, json.dumps(data))
 
 
-def get_data_for_timeframe(timeframe):
-    if timeframe not in TIMEFRAME_FORMAT:
-        raise ValueError(f'Invalid timeframe value: {timeframe}')
+def get_data():
+    timeframe = "today"
     data = redis.hgetall(timeframe)
     return {key.decode('utf-8'): json.loads(value) for key, value in data.items()}
 
