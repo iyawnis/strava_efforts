@@ -51,3 +51,7 @@ def load_segments():
         db.session.add(s)
 
     db.session.commit()
+
+
+if __name__ == '__main__':
+    load_segments()
