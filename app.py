@@ -6,16 +6,23 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import io
-import logging
 import os
 import sys
 from flask_restplus import Resource, Api
 from flask import make_response, Flask, render_template, redirect, request
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
 from flask_sqlalchemy import SQLAlchemy
+import logging
+import sys
 
+root = logging.getLogger()
+root.setLevel(logging.DEBUG)
 
-logger = logging.getLogger(__name__)
+handler = logging.StreamHandler(sys.stdout)
+handler.setLevel(logging.DEBUG)
+handler.setFormatter(formatter)
+root.addHandler(handler)
+
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
