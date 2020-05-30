@@ -32,10 +32,9 @@ hardcoded_segments = [
 
 def store_segments_counts():
     today = date.today()
-    for segment in Segment.query.all()():
-        effort_count, athlete_count = get_efforts_for_segment(segment)
-        s = Segment.query.get(segment)
-        e = SegmentEffort(effort_count=effort_count, athlete_count=athlete_count, segment=s, date=today)
+    for segment in Segment.query.all():
+        effort_count, athlete_count = get_efforts_for_segment(segment.id)
+        e = SegmentEffort(effort_count=effort_count, athlete_count=athlete_count, segment=segment, date=today)
         db.session.add(e)
     db.session.commit()
 

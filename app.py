@@ -19,8 +19,7 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 
 handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
 root.addHandler(handler)
 
 app = Flask(__name__)
