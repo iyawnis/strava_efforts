@@ -16,7 +16,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 logger = logging.getLogger(__name__)
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////tmp/test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 db = SQLAlchemy(app)
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')

@@ -1,7 +1,7 @@
 import os
 import redis as _redis
 
-REDIS_URL = os.environ.get('REDISTOGO_URL')
+REDIS_URL = os.environ.get('REDIS_URL')
 
 ACCESS_TOKEN_KEY = "access_token"
 REFRESH_TOKEN_KEY = "refresh_token"

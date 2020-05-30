@@ -1,7 +1,7 @@
 from datetime import date
 from app import db
 from strava import get_segment, get_efforts_for_segment
-import logging 
+import logging
 from models import Segment, SegmentEffort
 
 logger = logging.getLogger(__name__)
@@ -42,12 +42,11 @@ def store_segments_counts():
 
 
 def load_segments():
-    stored_segments = [s.segment_id for s in Segment.query.all()]
+    stored_segments = [s.id for s in Segment.query.all()]
 
-    for new in set(hardcoded_segments) - set(stored_segments):
-        segment = get_segment(new)
-        import pdb; pdb.set_trace()
-        s = Segment(segment_id=new, name=segment.name, created_at=segment.created_at)
+    for segment_id in set(hardcoded_segments) - set(stored_segments):
+        segment = get_segment(segment_id)
+        s = Segment(id=segment_id, name=segment.name, created_at=segment.created_at.date())
         logger.info(f"Creating Segment: {segment.name}")
         db.session.add(s)
 
