@@ -43,7 +43,7 @@ def get_client():
 def get_efforts_for_segment(segment_id):
     client = get_client()
     try:
-        sergment = client.get_segment(segment_id)
+        segment = client.get_segment(segment_id)
         return (segment.effort_count, segment.athlete_count)
     except ObjectNotFound:
         logger.exception(f'Invalid segmentId: {segment_id}')

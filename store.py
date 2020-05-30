@@ -33,12 +33,12 @@ def get_refresh_token():
     return redis.get(REFRESH_TOKEN_KEY)
 
 
-def set_segment_count(segment, count):
+def set_segment_count(segment, effort_count, athlete_count):
     timeframe = "today"
     strdate = date.today().strftime(TIMEFRAME_FORMAT[timeframe])
     data = redis.hget(timeframe, segment)
     data = json.loads(data) if data else {}
-    data[strdate] = count
+    data[strdate] = (effort_count, athlete_count)
     return redis.hset(timeframe, segment, json.dumps(data))
 
 
