@@ -6,15 +6,10 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import io
-import csv
-import click
 import logging
 import os
 from flask_restplus import Resource, Api
-from collections import OrderedDict
 from flask import make_response, Flask, render_template, redirect, request
-from store import get_data
-from jobs import store_segments_counts
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
 from flask_sqlalchemy import SQLAlchemy
 
@@ -27,13 +22,16 @@ db = SQLAlchemy(app)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 @app.cli.command()
-def load_segments():
+def update_segments():
     logger.info('Load segments')
+    from actions import load_segments
+    load_segments()
 
 
 @app.cli.command()
 def collect_day():
     logger.info('Collecting day counts')
+    from actions import store_segments_counts
     store_segments_counts()
 
 ###
@@ -54,19 +52,11 @@ def auth():
     return redirect("/")
 
 
-@app.route('/export/month/', methods=['GET'])
-def export_month():
-    return export_for_timeframe('month')
-
 
 @app.route('/export/today/', methods=['GET'])
 def export_today():
     return export_for_timeframe('today')
 
-
-@app.route('/export/year/', methods=['GET'])
-def export_year():
-    return export_for_timeframe('year')
 
 @app.route('/about/')
 def about():
@@ -94,4 +84,3 @@ def page_not_found(error):
 if __name__ == '__main__':
     debug = os.environ.get('DEBUG', False)
     app.run(debug=True, host="0.0.0.0", port=8888)
-
