@@ -14,47 +14,11 @@
 {% endif %}
 <div class="container">
     <p>
-    <a href="{{url_for('export_year')}}"> Year </a>
-    </p>
-
-    <p>
-    <a href="{{url_for('export_month')}}"> Month </a>
-    </p>
-    <p>
     <a href="{{url_for('export_today')}}"> Day </a>
     </p>
 </div>
 <br/>
 <h2>Weeks</h2>
 
-<table>
-    <tr>
-        {% for column in weeks[0] %}
-            <th>{{column}}</th>
-        {% endfor %}
-    </tr>
-    {% for row in weeks[1:] %}
-        <tr>
-            {% for col in row %}
-                <td>{{col}}</td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
 <hr>
-<h2>Months</h2>
-<table>
-    <tr>
-        {% for column in months[0] %}
-            <th>{{column}}</th>
-        {% endfor %}
-    </tr>
-    {% for row in months[1:] %}
-        <tr>
-            {% for col in row %}
-                <td>{{col}}</td>
-            {% endfor %}
-        </tr>
-    {% endfor %}
-</table>
 {% endblock %}
