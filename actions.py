@@ -35,6 +35,9 @@ def store_segments_counts():
     segments = Segment.query.all()
     logger.info(f"Retrieving segment counts for {len(segments)} segments")
     for segment in segments:
+        if SegmentEffort.query.filter_by(segment=segment, date=today).scalar() is not None:
+            logger.info(f"Day already collected for {segment.id}, skipping...")
+            continue
         effort_count, athlete_count = get_efforts_for_segment(segment.id)
         e = SegmentEffort(effort_count=effort_count, athlete_count=athlete_count, segment=segment, date=today)
         db.session.add(e)
