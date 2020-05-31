@@ -53,6 +53,7 @@ def delete_today():
 
 @cmd.cli.command("load_export")
 def load_export():
-    from load_export import *
+    from load_export import run_load
+    run_load()
 
 
