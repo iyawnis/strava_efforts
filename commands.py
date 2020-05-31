@@ -5,12 +5,6 @@ from flask import Blueprint
 logger = logging.getLogger(__name__)
 cmd = Blueprint('cmd', __name__)
 
-@cmd.cli.command("load_models")
-def load_models():
-    logger.info("Create all models")
-    from app import db
-    db.create_all()
-
 
 @cmd.cli.command("update_segments")
 def update_segments():

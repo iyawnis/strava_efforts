@@ -58,7 +58,3 @@ def load_segments():
 
     db.session.commit()
     logger.info("Loading segments complete")
-
-
-if __name__ == '__main__':
-    db.create_all()

@@ -1,3 +1,3 @@
 web: gunicorn -w 4 -b "0.0.0.0:$PORT" app:app
-clock: python clock.py
-release: python actions.py
+scheduler: python scheduler.py
+release: bash startup.sh
