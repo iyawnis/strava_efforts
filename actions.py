@@ -82,4 +82,4 @@ def database_to_dataframe():
     for segment in Segment.query.all():
         series = Series({e.date:e.effort_count for e in SegmentEffort.query.filter_by(segment=segment)})
         df[f"{segment.name} - {segment.id}"] = series
-    return df
+    return df.sort_index()
