@@ -68,3 +68,10 @@ def list_segments():
     logging.info("Segment Id\t|\tSegment Name")
     for segment in Segment.query.all():
         logging.info(f"{segment.id}\t|\t{segment.name}")
+
+def latest_entry():
+    latest = SegmentEffort.query.order_by(SegmentEffort.date.desc()).first()
+    if latest:
+        logger.info(f"Latest recorded entry is from {latest.date}")
+    else:
+        logger.info("There are no entries stored")

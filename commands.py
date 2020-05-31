@@ -34,6 +34,12 @@ def count_today():
     count = SegmentEffort.query.filter_by(date=today).count()
     logger.info(f'{count} efforts collected for today')
 
+
+@cmd.cli.command("latest_entry")
+def latest_entry():
+    from actions import latest_entry
+    latest_entry()
+
 @cmd.cli.command("delete_today")
 def delete_today():
     from models import SegmentEffort
