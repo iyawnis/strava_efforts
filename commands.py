@@ -49,3 +49,10 @@ def delete_today():
     db.session.commit()
 
     logger.info(f'{count} efforts deleted for today')
+
+
+@cmd.cli.command("load_export")
+def load_export():
+    from load_export import *
+
+
