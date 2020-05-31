@@ -16,3 +16,7 @@ class SegmentEffort(db.Model):
     segment_id = db.Column(db.Integer, db.ForeignKey("segment.id"), nullable=False)
     athlete_count = db.Column(db.Integer)
     date = db.Column(db.Date, index=True)
+
+    __mapper_args__ = {
+        "order_by": date.asc()
+    }
