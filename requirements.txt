@@ -16,6 +16,7 @@ stravalib==0.10.2
 APScheduler==3.6.3
 redis==3.5.2
 psycopg2
+pandas
 
 # ----------------------
 # Testing
