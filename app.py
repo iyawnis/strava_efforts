@@ -45,7 +45,10 @@ def index():
     authorization_url = None
     if requires_authorization():
         authorization_url = get_authorization_url()
-    return render_template('index.html', authorization_url=authorization_url)
+    segment_count = Segment.query.count()
+    latest_date = SegmentEffort.query.order_by(SegmentEffort.date.desc()).first().date
+
+    return render_template('index.html', authorization_url=authorization_url, segment_count=segment_count, latest_date=latest_date)
 
 @app.route('/authorization', methods=['GET'])
 def auth():
@@ -55,9 +58,16 @@ def auth():
 
 
 
-@app.route('/export/today/', methods=['GET'])
+@app.route('/export', methods=['GET'])
 def export_today():
-    return export_for_timeframe('today')
+    from actions import database_to_dataframe
+    si = io.StringIO()
+    df = database_to_dataframe()
+    df.to_csv(si)
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
 
 
 @app.route('/about/')

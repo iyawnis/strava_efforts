@@ -12,13 +12,15 @@
         <a href="{{authorization_url}}"> Click here to authorize</a>
     </div>
 {% endif %}
+
 <div class="container">
+    <b>Latest data pull: {{latest_date}}</b><br/>
+    <b>Total segments monitored: {{segment_count}}</b>
+    <hr/>
     <p>
-    <a href="{{url_for('export_today')}}"> Day </a>
+    <a href="{{url_for('export_today')}}">Export all data </a>
     </p>
 </div>
-<br/>
-<h2>Weeks</h2>
 
-<hr>
+
 {% endblock %}

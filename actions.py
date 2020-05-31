@@ -1,3 +1,4 @@
+from pandas import Series, DataFrame
 from datetime import date
 from app import db
 from strava import get_segment, get_efforts_for_segment
@@ -75,3 +76,10 @@ def latest_entry():
         logger.info(f"Latest recorded entry is from {latest.date}")
     else:
         logger.info("There are no entries stored")
+
+def database_to_dataframe():
+    df = DataFrame()
+    for segment in Segment.query.all():
+        series = Series({e.date:e.effort_count for e in SegmentEffort.query.filter_by(segment=segment)})
+        df[f"{segment.name} - {segment.id}"] = series
+    return df
