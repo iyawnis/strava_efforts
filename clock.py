@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 sched = BlockingScheduler()
 
 
-@sched.scheduled_job('cron', hour=23)
+@sched.scheduled_job('cron', hour=11)
 def day_job():
     logger.info("Storing today's counts")
     from actions import store_segments_counts
