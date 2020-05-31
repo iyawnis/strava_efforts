@@ -8,10 +8,11 @@ This file creates your application.
 import io
 import os
 import sys
-from flask_restplus import Resource, Api
 from flask import make_response, Flask, render_template, redirect, request
 from strava import requires_authorization, get_authorization_url, exchange_code_for_token
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
+
 import logging
 import sys
 
@@ -19,15 +20,18 @@ root = logging.getLogger()
 root.setLevel(logging.DEBUG)
 
 handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
-handler.setFormatter(formatter)
+handler.setLevel(logging.INFO)
 root.addHandler(handler)
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
-db = SQLAlchemy(app)
-
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+from models import *
+migrate = Migrate(app, db)
+
+
 from commands import cmd
 app.register_blueprint(cmd)
 

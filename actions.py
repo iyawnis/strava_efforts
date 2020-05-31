@@ -32,26 +32,46 @@ hardcoded_segments = [
 
 def store_segments_counts():
     today = date.today()
-    for segment in Segment.query.all()():
-        effort_count, athlete_count = get_efforts_for_segment(segment)
-        s = Segment.query.get(segment)
-        e = SegmentEffort(effort_count=effort_count, athlete_count=athlete_count, segment=s, date=today)
+    segments = Segment.query.all()
+    logger.info(f"Retrieving segment counts for {len(segments)} segments")
+    for segment in segments:
+        if SegmentEffort.query.filter_by(segment=segment, date=today).scalar() is not None:
+            logger.info(f"Day already collected for {segment.id}, skipping...")
+            continue
+        effort_count, athlete_count = get_efforts_for_segment(segment.id)
+        e = SegmentEffort(effort_count=effort_count, athlete_count=athlete_count, segment=segment, date=today)
         db.session.add(e)
     db.session.commit()
+    logger.info("Retrieving counts complete")
 
 
 
 def load_segments():
     stored_segments = [s.id for s in Segment.query.all()]
-
-    for segment_id in set(hardcoded_segments) - set(stored_segments):
+    new_segments = set(hardcoded_segments) - set(stored_segments)
+    if new_segments:
+        logger.info("Begin loading new segments")
+    else:
+        logger.info("No new segments to load")
+    for segment_id in new_segments:
         segment = get_segment(segment_id)
         s = Segment(id=segment_id, name=segment.name, created_at=segment.created_at.date())
         logger.info(f"Creating Segment: {segment.name}")
         db.session.add(s)
 
     db.session.commit()
+    logger.info("Loading segments complete")
 
+def list_segments():
+    count = Segment.query.count()
+    logging.info(f"Number of segments tracked: {count}")
+    logging.info("Segment Id\t|\tSegment Name")
+    for segment in Segment.query.all():
+        logging.info(f"{segment.id}\t|\t{segment.name}")
 
-if __name__ == '__main__':
-    db.create_all()
+def latest_entry():
+    latest = SegmentEffort.query.order_by(SegmentEffort.date.desc()).first()
+    if latest:
+        logger.info(f"Latest recorded entry is from {latest.date}")
+    else:
+        logger.info("There are no entries stored")

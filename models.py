@@ -8,6 +8,9 @@ class Segment(db.Model):
 
 
 class SegmentEffort(db.Model):
+    __table_args__ = (
+        db.UniqueConstraint('segment_id', 'date'),)
+
     id = db.Column(db.Integer, primary_key=True)
     effort_count = db.Column(db.Integer)
     segment_id = db.Column(db.Integer, db.ForeignKey("segment.id"), nullable=False)
