@@ -47,10 +47,13 @@ def store_segments_counts():
 
 
 def load_segments():
-    logger.info("Begin loading new segments")
     stored_segments = [s.id for s in Segment.query.all()]
-
-    for segment_id in set(hardcoded_segments) - set(stored_segments):
+    new_segments = set(hardcoded_segments) - set(stored_segments)
+    if new_segments:
+        logger.info("Begin loading new segments")
+    else:
+        logger.info("No new segments to load")
+    for segment_id in new_segments:
         segment = get_segment(segment_id)
         s = Segment(id=segment_id, name=segment.name, created_at=segment.created_at.date())
         logger.info(f"Creating Segment: {segment.name}")
@@ -58,3 +61,10 @@ def load_segments():
 
     db.session.commit()
     logger.info("Loading segments complete")
+
+def list_segments():
+    count = Segment.query.count()
+    logging.info(f"Number of segments tracked: {count}")
+    logging.info("Segment Id\t|\tSegment Name")
+    for segment in Segment.query.all():
+        logging.info(f"{segment.id}\t|\t{segment.name}")

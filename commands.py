@@ -6,8 +6,15 @@ logger = logging.getLogger(__name__)
 cmd = Blueprint('cmd', __name__)
 
 
-@cmd.cli.command("update_segments")
-def update_segments():
+@cmd.cli.command("list_segments")
+def list_Segments():
+    logger.info('List segments')
+    from actions import list_segments
+    list_segments()
+
+
+@cmd.cli.command("load_segments")
+def load_segments():
     logger.info('Load segments')
     from actions import load_segments
     load_segments()
