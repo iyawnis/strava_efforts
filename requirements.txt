@@ -3,8 +3,9 @@
 # ----------------------
 Flask==1.1.2
 Flask-WTF==0.14.3
-flask-restplus==0.13.0
 Werkzeug==0.16.1
+Flask-Migrate
+Flask-SQLAlchemy
 
 
 # ----------------------
@@ -14,6 +15,8 @@ Werkzeug==0.16.1
 stravalib==0.10.2
 APScheduler==3.6.3
 redis==3.5.2
+psycopg2
+pandas
 
 # ----------------------
 # Testing

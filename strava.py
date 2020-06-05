@@ -12,12 +12,6 @@ CLIENT_ID = os.environ.get("CLIENT_ID")
 CLIENT_SECRET = os.environ.get("CLIENT_SECRET")
 REDIRECT_URL = os.environ.get("REDIRECT_URL")
 
-TIMEFRAME = {
-    'month': 'this_month',
-    'year': 'this_year',
-    'week': 'this_week',
-    'today': 'today'
-}
 
 def set_token(token_dict):
     set_access_token(token_dict["access_token"], int(token_dict["expires_at"] - time.time()))
@@ -41,10 +35,15 @@ def get_client():
     return Client(access_token=get_token())
 
 def get_efforts_for_segment(segment_id):
+        segment = get_segment(segment_id)
+        if not segment:
+            return None
+        return (segment.effort_count, segment.athlete_count)
+
+def get_segment(segment_id):
     client = get_client()
     try:
-        segment = client.get_segment(segment_id)
-        return (segment.effort_count, segment.athlete_count)
+        return client.get_segment(segment_id)
     except ObjectNotFound:
         logger.exception(f'Invalid segmentId: {segment_id}')
     return None
