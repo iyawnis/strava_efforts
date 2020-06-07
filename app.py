@@ -57,15 +57,26 @@ def auth():
     return redirect("/")
 
 
+@app.route("/export-diff", methods=['GET'])
+def export_diff():
+    from actions import database_to_dataframe
+    si = io.StringIO()
+    df = database_to_dataframe().diff()
+    df.to_csv(si)
+    output = make_response(si.getvalue())
+    output.headers["Content-Disposition"] = "attachment; filename=export-diff.csv"
+    output.headers["Content-type"] = "text/csv"
+    return output
 
-@app.route('/export', methods=['GET'])
-def export_today():
+
+@app.route('/export-counts', methods=['GET'])
+def export_counts():
     from actions import database_to_dataframe
     si = io.StringIO()
     df = database_to_dataframe()
     df.to_csv(si)
     output = make_response(si.getvalue())
-    output.headers["Content-Disposition"] = "attachment; filename=export.csv"
+    output.headers["Content-Disposition"] = "attachment; filename=export-count.csv"
     output.headers["Content-type"] = "text/csv"
     return output
 
